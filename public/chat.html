@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wannaChat — Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen overflow-hidden">
+
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-60 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto"></aside>
+
+    <!-- Main Chat Area -->
+    <div class="flex-1 flex flex-col">
+      <!-- Messages -->
+      <div id="messages" class="flex-1 overflow-y-auto px-6 py-4 space-y-1"></div>
+
+      <!-- Compose -->
+      <div class="border-t border-slate-800 bg-slate-900 p-4">
+        <form id="messageForm" class="flex gap-3">
+          <input name="message" placeholder="Type a message..."
+                 class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" autocomplete="off">
+          <button type="submit"
+                  class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-500/20">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <script id="message-template" type="text/html">
+    <div class="py-1.5">
+      <div class="flex items-baseline gap-2">
+        <span class="text-sm font-semibold text-blue-400">{{userName}}</span>
+        <span class="text-xs text-slate-600">{{createdAt}}</span>
+      </div>
+      <p class="text-sm text-slate-300 mt-0.5">{{message}}</p>
+    </div>
+  </script>
+
+  <script id="sidebar-template" type="text/html">
+    <div class="p-4 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
+      <h2 class="text-base font-bold text-slate-100 truncate">{{roomName}}</h2>
+      <button id="leaveRoomBtn" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 px-2.5 py-1.5 rounded transition shadow">Leave</button>
+    </div>
+    <div class="p-4">
+      <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Active Users</h3>
+      <ul class="space-y-1.5">
+        {{#users}}
+          <li class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></span>
+            <span class="text-sm text-slate-300 truncate">{{.}}</span>
+          </li>
+        {{/users}}
+      </ul>
+    </div>
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
