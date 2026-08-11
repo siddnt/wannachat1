@@ -27,7 +27,8 @@ const roomName = searchParams.get('roomName');
 const $messages = document.getElementById('messages');
 const $sidebar = document.getElementById('sidebar');
 const $messageForm = document.getElementById('messageForm');
-const $messageInput = $messageForm.querySelector('input');
+const $messageInput = $messageForm.querySelector('input[name="message"]');
+const $imageInput = document.getElementById('imageInput');
 
 // Mustache templates
 const messageTemplate = document.getElementById('message-template').innerHTML;
@@ -55,6 +56,7 @@ function renderMessage(msg) {
     const html = Mustache.render(messageTemplate, {
       userName: name,
       message: text,
+      imageUrl: msg.imageUrl,
       createdAt: time,
     });
     $messages.insertAdjacentHTML('beforeend', html);
@@ -76,6 +78,7 @@ async function loadHistory(roomId) {
       renderMessage({
         userName: msg.userName || msg.sender,
         messageText: msg.text,
+        imageUrl: msg.imageUrl,
         isEvent: msg.isEvent,
         timestamp: msg.timestamp,
       });
@@ -112,12 +115,38 @@ function attachLeaveButton() {
 }
 
 // --- Send message ---
-$messageForm.addEventListener('submit', (e) => {
+$messageForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const message = e.target.elements.message.value;
-  if (!message.trim()) return;
-  socket.emit('sendMessage', { roomName, message });
+  const file = $imageInput.files[0];
+
+  if (!message.trim() && !file) return;
+
+  let imageUrl = null;
+
+  if (file) {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const response = await axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `BEARER ${authToken}`
+        }
+      });
+      imageUrl = response.data.imageUrl;
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      alert('Failed to upload image. Please try again.');
+      return;
+    }
+  }
+
+  socket.emit('sendMessage', { roomName, message, imageUrl });
+  
   $messageInput.value = '';
+  $imageInput.value = '';
   $messageInput.focus();
 });
 

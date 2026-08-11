@@ -5,8 +5,8 @@ const recentMessages = 20
 
 const User = require('../models/User');
 
-async function saveMessage(messageBody, mail, userName, isEvent, roomName) {
-    console.log("---------saving data-------",messageBody, mail, userName, isEvent, roomName);
+async function saveMessage(messageBody, mail, userName, isEvent, roomName, imageUrl) {
+    console.log("---------saving data-------",messageBody, mail, userName, isEvent, roomName, imageUrl);
 
     try {
         let chatRoom = await ChatRoom.findOne({ name: roomName });
@@ -19,6 +19,7 @@ async function saveMessage(messageBody, mail, userName, isEvent, roomName) {
             text: messageBody,
             sender: mail,
             isEvent: isEvent,
+            imageUrl: imageUrl,
         });
 
         console.log("Message created successfully:", message.toObject());

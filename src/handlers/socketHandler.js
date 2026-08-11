@@ -54,8 +54,8 @@ const socketHandler = (io) => {
 
   const sendMessageHandler = (io, userMail, userName) => {
     return async (data) => {
-      const { roomName, message } = data;
-      const newMessage = prepareMessage(roomName, message, userMail, userName, false)
+      const { roomName, message, imageUrl } = data;
+      const newMessage = prepareMessage(roomName, message, userMail, userName, false, imageUrl)
 
       // 1. Instant Broadcast: emit immediately
       io.to(roomName).emit('receiveMessage', newMessage);
@@ -112,6 +112,6 @@ const socketHandler = (io) => {
   }
 }
 
-const prepareMessage = (roomName, messageText, userMail, userName, isEvent) => ({roomName, messageText, userMail, userName, isEvent})
+const prepareMessage = (roomName, messageText, userMail, userName, isEvent, imageUrl) => ({roomName, messageText, userMail, userName, isEvent, imageUrl})
 
 module.exports = socketHandler;

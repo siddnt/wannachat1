@@ -9,9 +9,9 @@ function startWorker() {
   worker = new Worker(
     'message-saving-queue',
     async (job) => {
-      const { messageText, userMail, userName, isEvent, roomName } = job.data;
+      const { messageText, userMail, userName, isEvent, roomName, imageUrl } = job.data;
       console.log(`[Worker] Processing job ${job.id}: saving message to MongoDB`);
-      await saveMessage(messageText, userMail, userName, isEvent, roomName);
+      await saveMessage(messageText, userMail, userName, isEvent, roomName, imageUrl);
       console.log(`[Worker] Job ${job.id} completed`);
     },
     {
